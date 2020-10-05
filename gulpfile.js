@@ -1,23 +1,46 @@
 const gulp = require('gulp');
 const sass = require('gulp-sass');
+const sassGlob = require("gulp-sass-glob");
 const ejs = require('gulp-ejs');
 const rename = require('gulp-rename');
+const browserSync = require('browser-sync').create();
 
 gulp.task('sass', done => {
-    gulp.src('src/sass/**/*.scss')
+    return gulp.src("src/scss/**/*")
+        .pipe(sassGlob())
         .pipe(sass())
         .pipe(sass({outputStyle: 'compressed'}))
         .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest('dest/css/'));
+        .pipe(gulp.dest('./dest/css/'));
     done()
 });
 
 gulp.task('ejs', done => {
-    gulp.src(['src/ejs/**/*.ejs', '!' + 'src/ejs/layout/_*.ejs'])
+    gulp.src(['./src/ejs/**/*.ejs', '!' + './src/ejs/layout/_*.ejs'])
         .pipe(ejs())
         .pipe(rename({extname: '.html'}))
-        .pipe(gulp.dest('dest/'));
+        .pipe(gulp.dest('./dest'));
     done()
+});
+
+gulp.task('serve', done => {
+    browserSync.init({
+        server: {
+            baseDir: './dest',
+            index: 'index.html',
+        },
+    })
+    done()
+});
+
+gulp.task('watch', () => {
+    const browserReload = done => {
+        browserSync.reload()
+        done()
+    }
+    gulp.watch('./dest/**/*', browserReload);
+    gulp.watch('./src/sass/**/*.scss', gulp.series('sass','log'));
+    gulp.watch('./src/ejs/**/*.ejs', gulp.series('ejs','log'));
 });
 
 gulp.task('log', done => {
@@ -25,13 +48,9 @@ gulp.task('log', done => {
     done()
 });
 
-gulp.task('watch', () => {
-    gulp.watch('src/sass/**/*.scss', gulp.series('sass','log'));
-    gulp.watch('src/ejs/**/*.ejs', gulp.series('ejs','log'));
-});
-
 gulp.task("default",
     gulp.series(
+        'serve',
         'watch'
     )
 );
