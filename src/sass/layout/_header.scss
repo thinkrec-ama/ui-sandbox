@@ -1,0 +1,10 @@
+.headerWrap {
+	display: flex;
+	padding: 20px;
+	
+	.heading {
+		font-weight: bold;
+		font-size: 18px;
+		color: $primary-brand-color;
+	}
+}

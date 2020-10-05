@@ -1,0 +1,15 @@
+.footer {
+	width: 100%;
+	padding: 20px;
+	box-sizing: border-box;
+}
+.footerInner {
+	width: 1080px;
+	margin: 0 auto;
+	
+	.footerHeadline {
+		font-size: $base-font-size-large;
+		font-weight: bold;
+		color: $primary-brand-color;
+	}
+}
