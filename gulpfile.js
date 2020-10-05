@@ -11,9 +11,7 @@ const browserSync = require('browser-sync').create();
 
 //setting : paths
 const paths = {
-    root: {
-        dist: './dest/'
-    },
+    root: './dest/',
     html: {
         src: ['./src/ejs/**/*.ejs', '!' + './src/ejs/**/_*.ejs'],
         dist: './dest/'
@@ -30,6 +28,19 @@ const paths = {
 
 //gulpコマンドの省略
 const { watch, task, src, dest, parallel } = require('gulp');
+
+//ejs
+task('ejs', function () {
+    return (
+        src(paths.html.src)
+            .pipe(plumber())
+            .pipe(ejs({}, {}, { ext: '.html' }))
+            .pipe(rename({
+                extname: '.html'
+            }))
+            .pipe(dest(paths.html.dist))
+    );
+});
 
 //Sass
 task('sass', function () {
@@ -52,19 +63,6 @@ task('sass', function () {
     );
 });
 
-//ejs
-task('ejs', function () {
-    return (
-        src(paths.html.src)
-            .pipe(plumber())
-            .pipe(ejs())
-            .pipe(rename({
-                extname: '.html'
-            }))
-            .pipe(dest(paths.html.dist))
-    );
-});
-
 //JS Compress
 task('js', function () {
     return (
@@ -82,7 +80,7 @@ task('js', function () {
 task('browser-sync', () => {
     return browserSync.init({
         server: {
-            baseDir: paths.root.dist,
+            baseDir: paths.root,
             index: 'index.html'
         },
         port: 8080,
