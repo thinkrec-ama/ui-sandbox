@@ -6,7 +6,7 @@ const rename = require('gulp-rename');
 const browserSync = require('browser-sync').create();
 
 gulp.task('sass', done => {
-    return gulp.src("src/scss/**/*")
+    return gulp.src("./src/sass/**/*")
         .pipe(sassGlob())
         .pipe(sass())
         .pipe(sass({outputStyle: 'compressed'}))
@@ -29,7 +29,7 @@ gulp.task('serve', done => {
             baseDir: './dest',
             index: 'index.html',
         },
-    })
+    });
     done()
 });
 
@@ -39,8 +39,8 @@ gulp.task('watch', () => {
         done()
     }
     gulp.watch('./dest/**/*', browserReload);
-    gulp.watch('./src/sass/**/*.scss', gulp.series('sass','log'));
-    gulp.watch('./src/ejs/**/*.ejs', gulp.series('ejs','log'));
+    gulp.watch('./src/sass/**/*', gulp.series('sass','log'));
+    gulp.watch('./src/ejs/**/*', gulp.series('ejs','log'));
 });
 
 gulp.task('log', done => {
@@ -50,6 +50,7 @@ gulp.task('log', done => {
 
 gulp.task("default",
     gulp.series(
+        'sass',
         'serve',
         'watch'
     )
