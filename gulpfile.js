@@ -1,57 +1,106 @@
 const gulp = require('gulp');
+const notify = require('gulp-notify');
+const plumber = require('gulp-plumber');
 const sass = require('gulp-sass');
-const sassGlob = require("gulp-sass-glob");
+const sassGlob = require('gulp-sass-glob');
 const ejs = require('gulp-ejs');
 const rename = require('gulp-rename');
+const autoprefixer = require('gulp-autoprefixer');
+const uglify = require('gulp-uglify');
 const browserSync = require('browser-sync').create();
 
-gulp.task('sass', done => {
-    return gulp.src("./src/sass/**/*")
-        .pipe(sassGlob())
-        .pipe(sass())
-        .pipe(sass({outputStyle: 'compressed'}))
-        .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest('./dest/css/'));
-    done()
-});
-
-gulp.task('ejs', done => {
-    gulp.src(['./src/ejs/**/*.ejs', '!' + './src/ejs/layout/_*.ejs'])
-        .pipe(ejs())
-        .pipe(rename({extname: '.html'}))
-        .pipe(gulp.dest('./dest'));
-    done()
-});
-
-gulp.task('serve', done => {
-    browserSync.init({
-        server: {
-            baseDir: './dest',
-            index: 'index.html',
-        },
-    });
-    done()
-});
-
-gulp.task('watch', () => {
-    const browserReload = done => {
-        browserSync.reload()
-        done()
+//setting : paths
+const paths = {
+    root: {
+        dist: './dest/'
+    },
+    html: {
+        src: ['./src/ejs/**/*.ejs', '!' + './src/ejs/**/_*.ejs'],
+        dist: './dest/'
+    },
+    styles: {
+        src: './src/sass/**/*.scss',
+        dist: './dest/css/'
+    },
+    scripts: {
+        src: './src/js/**/*.js',
+        dist: "./dest/js/"
     }
-    gulp.watch('./dest/**/*', browserReload);
-    gulp.watch('./src/sass/**/*', gulp.series('sass','log'));
-    gulp.watch('./src/ejs/**/*', gulp.series('ejs','log'));
+};
+
+//gulpコマンドの省略
+const { watch, task, src, dest, parallel } = require('gulp');
+
+//Sass
+task('sass', function () {
+    return (
+        src(paths.styles.src)
+            .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
+            .pipe(sassGlob())
+            .pipe(sass({
+                outputStyle: 'compressed'
+            }))
+            .pipe(rename({
+                suffix: '.min'
+            }))
+            .pipe(autoprefixer({
+                browsers: ['ie >= 11'],
+                cascade: false,
+                grid: true
+            }))
+            .pipe(dest(paths.styles.dist))
+    );
 });
 
-gulp.task('log', done => {
-    console.log("DONE");
-    done()
+//ejs
+task('ejs', function () {
+    return (
+        src(paths.html.src)
+            .pipe(plumber())
+            .pipe(ejs())
+            .pipe(rename({
+                extname: '.html'
+            }))
+            .pipe(dest(paths.html.dist))
+    );
 });
 
-gulp.task("default",
-    gulp.series(
-        'sass',
-        'serve',
-        'watch'
-    )
-);
+//JS Compress
+task('js', function () {
+    return (
+        src(paths.scripts.src)
+            .pipe(plumber())
+            .pipe(uglify())
+            .pipe(rename({
+                suffix: '.min'
+            }))
+            .pipe(dest(paths.scripts.dist))
+    );
+});
+
+// browser-sync
+task('browser-sync', () => {
+    return browserSync.init({
+        server: {
+            baseDir: paths.root.dist,
+            index: 'index.html'
+        },
+        port: 8080,
+        reloadOnRestart: true
+    });
+});
+
+// browser-sync reload
+task('reload', (done) => {
+    browserSync.reload();
+    done();
+});
+
+//watch
+task('watch', (done) => {
+    watch(paths.styles.src, gulp.task('sass'));
+    watch(paths.html.src, gulp.task('ejs'));
+    watch(paths.scripts.src, gulp.task('js'));
+    done();
+});
+task('default', parallel('watch', 'browser-sync'));
