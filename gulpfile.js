@@ -111,8 +111,8 @@ task('reload', (done) => {
 
 //watch
 task('watch', (done) => {
+    watch('src/ejs/**/*.ejs', gulp.task('ejs'));
     watch(paths.styles.src, gulp.task('sass'));
-    watch(paths.ejs.src, gulp.task('ejs'));
     watch(paths.scripts.src, gulp.task('js'));
     done();
 });
