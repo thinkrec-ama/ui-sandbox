@@ -12,7 +12,7 @@ const browserSync = require('browser-sync').create();
 //setting : paths
 const paths = {
     root: './dest/',
-    html: {
+    ejs: {
         src: ['./src/ejs/**/*.ejs', '!' + './src/ejs/**/_*.ejs'],
         dist: './dest/'
     },
@@ -32,13 +32,18 @@ const { watch, task, src, dest, parallel } = require('gulp');
 //ejs
 task('ejs', function () {
     return (
-        src(paths.html.src)
-            .pipe(plumber())
+        src(paths.ejs.src)
+            .pipe(plumber({
+                errorHandler: notify.onError({
+                    title: 'ejsエラーだよ',
+                    message: '<%= error.message %>'
+                })
+            }))
             .pipe(ejs({}, {}, { ext: '.html' }))
             .pipe(rename({
                 extname: '.html'
             }))
-            .pipe(dest(paths.html.dist))
+            .pipe(dest(paths.ejs.dist))
     );
 });
 
@@ -46,7 +51,12 @@ task('ejs', function () {
 task('sass', function () {
     return (
         src(paths.styles.src)
-            .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
+            .pipe(plumber({
+                errorHandler: notify.onError({
+                    title: 'Sassエラーだよ',
+                    message: '<%= error.message %>'
+                })
+            }))
             .pipe(sassGlob())
             .pipe(sass({
                 outputStyle: 'compressed'
@@ -67,7 +77,12 @@ task('sass', function () {
 task('js', function () {
     return (
         src(paths.scripts.src)
-            .pipe(plumber())
+            .pipe(plumber({
+                errorHandler: notify.onError({
+                    title: 'jsエラーだよ',
+                    message: '<%= error.message %>'
+                })
+            }))
             .pipe(uglify())
             .pipe(rename({
                 suffix: '.min'
@@ -97,7 +112,7 @@ task('reload', (done) => {
 //watch
 task('watch', (done) => {
     watch(paths.styles.src, gulp.task('sass'));
-    watch(paths.html.src, gulp.task('ejs'));
+    watch(paths.ejs.src, gulp.task('ejs'));
     watch(paths.scripts.src, gulp.task('js'));
     done();
 });
