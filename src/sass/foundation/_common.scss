@@ -1,3 +1,10 @@
+@import 'font';
+@import 'color';
+
+body {
+	font-size: $base-font-size;
+	color: $secondary-brand-color-black;
+}
 label {
 	cursor: pointer;
 }

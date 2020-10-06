@@ -1,10 +1,20 @@
 .headerWrap {
-	display: flex;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	box-sizing: border-box;
 	padding: 20px;
+	background: $secondary-brand-color-white;
 	
-	.heading {
-		font-weight: bold;
-		font-size: 18px;
-		color: $primary-brand-color;
+	.headerInner {
+		display: flex;
+		width: 1300px;
+		margin: 0 auto;
+		
+		.heading {
+			font-weight: bold;
+			font-size: $base-font-size-largest;
+			color: $primary-brand-color;
+		}
 	}
 }
