@@ -14,6 +14,7 @@ const paths = {
     root: './dest/',
     ejs: {
         src: ['./src/ejs/**/*.ejs', '!' + './src/ejs/**/_*.ejs'],
+        watch: './src/ejs/**/*.ejs',
         dist: './dest/'
     },
     styles: {
@@ -111,7 +112,7 @@ task('reload', (done) => {
 
 //watch
 task('watch', (done) => {
-    watch('src/ejs/**/*.ejs', gulp.task('ejs'));
+    watch(paths.ejs.watch, gulp.task('ejs'));
     watch(paths.styles.src, gulp.task('sass'));
     watch(paths.scripts.src, gulp.task('js'));
     done();
