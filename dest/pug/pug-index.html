@@ -2,28 +2,34 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/style.min.css">
     <title>Pug練習</title>
     <meta name="description" content="Pugの練習">
     <meta name="keywords" content="Pugの練習">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.min.css">
   </head>
   <body>
-    <header>
-      <h1>ページタイトル</h1>
-    </header>
-    <div id="content">
-      <div class="inner">
-        <p>Hello Pug!</p>
-        <ul class="gNav">
-          <li><a href="#">HOME</a></li>
-          <li><a href="#">ABOUT</a></li>
-          <li><a href="#">NEWS</a></li>
-        </ul>
+    <header class="headerWrap">
+      <div class="headerInner">
+        <h1 class="heading">Pug記法練習</h1>
       </div>
-    </div>
-    <footer>
-      <p>フッターだよ</p>
+    </header>
+    <main>
+      <section class="sectionWrapper">
+        <div class="sectionInner">
+          <p>Pugの練習だよ</p>
+          <ul class="gNav">
+            <li><a href="#">HOME</a></li>
+            <li><a href="#">ABOUT</a></li>
+            <li><a href="#">NEWS</a></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="footerInner">
+        <p class="footerHeadline">フッターだよ</p>
+      </div>
     </footer>
     <script src="../js/scrollTop.min.js"></script>
   </body>
