@@ -1,6 +1,7 @@
 const gulp = require('gulp');
 const notify = require('gulp-notify');
 const plumber = require('gulp-plumber');
+const pug = require('gulp-pug');
 const sass = require('gulp-sass');
 const sassGlob = require('gulp-sass-glob');
 const ejs = require('gulp-ejs');
@@ -16,6 +17,11 @@ const paths = {
         src: ['./src/ejs/**/*.ejs', '!' + './src/ejs/**/_*.ejs'],
         watch: './src/ejs/**/*.ejs',
         dist: './dest/'
+    },
+    pug: {
+        src: ['./src/pug/**/*.pug', '!' + './src/pug/**/_*.pug'],
+        watch: './src/pug/**/*.pug',
+        dist: './dest/pug/'
     },
     styles: {
         src: './src/sass/**/*.scss',
@@ -45,6 +51,23 @@ task('ejs', function () {
                 extname: '.html'
             }))
             .pipe(dest(paths.ejs.dist))
+    );
+});
+
+//pug
+task('pug', function () {
+    return (
+        src(paths.pug.src)
+            .pipe(plumber({
+                errorHandler: notify.onError({
+                    title: 'pugエラーだよ',
+                    message: '<%= error.message %>'
+                })
+            }))
+            .pipe(pug({
+                pretty: true
+            }))
+            .pipe(dest(paths.pug.dist))
     );
 });
 
@@ -113,6 +136,7 @@ task('reload', (done) => {
 //watch
 task('watch', (done) => {
     watch(paths.ejs.watch, gulp.task('ejs'));
+    watch(paths.pug.watch, gulp.task('pug'));
     watch(paths.styles.src, gulp.task('sass'));
     watch(paths.scripts.src, gulp.task('js'));
     done();
