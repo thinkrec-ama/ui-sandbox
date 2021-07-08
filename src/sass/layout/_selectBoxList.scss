@@ -1,0 +1,13 @@
+.seleckHoge {
+	display: flex;
+}
+.selectBoxList {
+	& > li {
+		& + li {
+			margin-top: 20px;
+		}
+	}
+	& + .buttonWrapper {
+		margin-left: 5px;
+	}
+}

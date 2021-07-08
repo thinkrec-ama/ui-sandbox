@@ -1,0 +1,19 @@
+@import 'font';
+@import 'color';
+
+body {
+	font-size: $base-font-size;
+	color: $secondary-brand-color-black;
+}
+label {
+	cursor: pointer;
+}
+.sectionWrapper {
+	height: 500px;
+	padding: 20px 10px;
+	
+	.sectionInner {
+		width: 1080px;
+		margin: 0 auto;
+	}
+}
